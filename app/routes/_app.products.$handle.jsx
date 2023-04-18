@@ -194,3 +194,16 @@ export function links() {
     },
   ];
 }
+
+export function meta({ data }) {
+  const title = `${data.product.title} | LMNT`;
+  const description = data.product.description;
+
+  return [
+    { title: title },
+    {
+      name: 'description',
+      content: description,
+    },
+  ];
+}

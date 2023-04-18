@@ -7,6 +7,7 @@ import {
   ScrollRestoration,
 } from '@remix-run/react';
 import stylesheet from '~/styles/tailwind.css';
+import favicon from '../public/LMNT_Favicon_32x32.png';
 
 export default function App() {
   return (
@@ -28,5 +29,8 @@ export default function App() {
 }
 
 export function links() {
-  return [{ rel: 'stylesheet', href: stylesheet }];
+  return [
+    { rel: 'stylesheet', href: stylesheet },
+    { rel: 'icon', type: 'image/svg+xml', href: favicon },
+  ];
 }

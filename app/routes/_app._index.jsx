@@ -52,5 +52,15 @@ export default function Home() {
 }
 
 export const meta = () => {
-  return [{ title: 'New Remix App' }];
+  return [
+    {
+      title:
+        'Drink LMNT | Paleo-Keto Friendly Hydration | Zero Sugar Electrolytes – Drink LMNT, INC.',
+    },
+    {
+      name: 'description',
+      content:
+        "An electrolyte drink mix with everything you need & nothing you don't. No sugar. No artificial ingredients. No fillers. LMNT kickstarts your day, supports healthy fasting, powers your workouts, & is the ultimate travel companion. Official partner of USA Weightlifting.",
+    },
+  ];
 };

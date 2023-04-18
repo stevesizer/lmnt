@@ -86,3 +86,14 @@ const PRODUCTS_QUERY = gql`
     }
   }
 `;
+
+export const meta = () => {
+  return [
+    { title: 'Store | LMNT' },
+    {
+      name: 'description',
+      content:
+        'LMNT Recharge is a tasty electrolyte drink mix that replaces vital electrolytes without the sugar, LMNT Recharge is the perfect sports drink for athletes, low-carb, keto, and paleo diet followers, and people who need electrolytes.',
+    },
+  ];
+};
