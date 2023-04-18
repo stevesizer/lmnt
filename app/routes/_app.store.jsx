@@ -8,7 +8,7 @@ export default function Store() {
   console.log('products', products);
   return (
     <div>
-      <div className='max-w-[1300px] mx-auto p-12'>
+      <div className='max-w-[1300px] mx-auto py-12 px-4'>
         <h1 className='text-4xl text-gray-900 mb-8 font-bold'>Shop All</h1>
         <div className='mt-6 grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 md:grid-cols-4 lg:gap-x-8'>
           {products.nodes.map((product) => {
