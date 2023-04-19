@@ -1,11 +1,12 @@
 import { useLoaderData } from '@remix-run/react';
 import { json } from '@remix-run/node';
 import { formatPrice } from '~/utils';
-import { gql } from 'graphql-request';
-import { client } from '~/utils/graphql-client';
+import { gql, GraphQLClient } from 'graphql-request';
+import { PRODUCTS_QUERY } from '~/data/queries';
+import { fetchProducts } from '~/data';
+
 export default function Store() {
   const { products } = useLoaderData();
-  console.log('products', products);
   return (
     <div>
       <div className='max-w-[1300px] mx-auto py-12 px-4'>
@@ -46,46 +47,32 @@ export default function Store() {
   );
 }
 
+// export async function fetchProducts(client, query = PRODUCTS_QUERY) {
+//   if (!client) {
+//     client = new GraphQLClient(process.env.API_URL, {
+//       headers: {
+//         'Content-Type': 'application/json',
+//         'X-Shopify-Storefront-Access-Token': process.env.ACCESS_TOKEN,
+//       },
+//     });
+//   }
+//   console.log('query', query);
+//   const { products } = await client.request(query);
+
+//   return products;
+// }
+
 export async function loader() {
-  const { products } = await client.request(PRODUCTS_QUERY);
+  try {
+    const products = await fetchProducts(null, PRODUCTS_QUERY);
 
-  return json({ products });
-}
-
-const PRODUCTS_QUERY = gql`
-  query Products {
-    products(first: 10) {
-      nodes {
-        id
-        handle
-        description
-        title
-        featuredImage {
-          altText
-          url
-        }
-        variants(first: 1) {
-          nodes {
-            id
-            image {
-              url
-              altText
-              width
-              height
-            }
-          }
-        }
-        priceRange {
-          minVariantPrice {
-            amount
-            currencyCode
-          }
-        }
-        tags
-      }
-    }
+    return json({ products });
+  } catch (error) {
+    throw new Response('Error connecting to store. Please try again.', {
+      status: 503,
+    });
   }
-`;
+}
 
 export const meta = () => {
   return [

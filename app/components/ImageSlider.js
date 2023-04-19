@@ -10,11 +10,21 @@ export default function ImageSlider({ slides }) {
   };
   return (
     <Slider {...settings}>
-      {slides.map((slide) => (
-        <div key={slide.id}>
-          <img src={slide.image.url} alt='product' />
-        </div>
-      ))}
+      {slides.map((slide) => {
+        if (!slide.image || !slide.image.url) {
+          return null;
+        }
+        return (
+          <div key={slide.image.url}>
+            <img
+              role='img'
+              key={slide.id}
+              src={slide.image.url}
+              alt='product'
+            />
+          </div>
+        );
+      })}
     </Slider>
   );
 }

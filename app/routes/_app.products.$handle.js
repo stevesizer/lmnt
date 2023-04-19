@@ -2,12 +2,11 @@ import { useLoaderData } from '@remix-run/react';
 import { json } from '@remix-run/node';
 import { formatPrice } from '~/utils';
 import { useState } from 'react';
-import { Tab } from '@headlessui/react';
 import { StarIcon } from '@heroicons/react/20/solid';
 import Variants from '~/components/variants';
-import { gql } from 'graphql-request';
-import { client } from '~/utils/graphql-client';
+import { fetchProduct } from '~/data';
 import ImageSlider from '../components/ImageSlider';
+import { PRODUCT_QUERY } from '../data/queries';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
@@ -24,7 +23,6 @@ function classNames(...classes) {
 
 export default function ProductDetails() {
   const { product } = useLoaderData();
-  console.log('product', product);
   const [selectedVariant, setSelectedVariant] = useState(
     product.variants?.nodes[0].id
   );
@@ -40,6 +38,7 @@ export default function ProductDetails() {
           <div className='hidden md:grid md:grid-cols-2 gap-4'>
             {product.media?.nodes?.map((node) => (
               <img
+                key={node.image.url}
                 src={node.image.url}
                 alt=''
                 className='h-full w-full object-cover object-center rounded-xl'
@@ -106,81 +105,15 @@ export default function ProductDetails() {
 export async function loader({ params }) {
   const { handle } = params;
 
-  const variables = {
-    handle: handle,
-  };
-
-  const { product } = await client.request(PRODUCT_QUERY, variables);
-
-  console.log('product', product);
+  const product = await fetchProduct(handle, PRODUCT_QUERY, null);
 
   if (!product?.id) {
     console.error('Product not found');
     throw new Response('Product cannot be found.', { status: 404 });
   }
+
   return json({ product });
 }
-
-const PRODUCT_QUERY = gql`
-  query product($handle: String!) {
-    product(handle: $handle) {
-      id
-      title
-      handle
-      vendor
-      description
-      priceRange {
-        minVariantPrice {
-          amount
-          currencyCode
-        }
-      }
-      media(first: 8) {
-        nodes {
-          ... on MediaImage {
-            mediaContentType
-            image {
-              id
-              url
-              altText
-              width
-              height
-            }
-          }
-          ... on Model3d {
-            id
-            mediaContentType
-            sources {
-              mimeType
-              url
-            }
-          }
-        }
-      }
-      variants(first: 8) {
-        nodes {
-          id
-          image {
-            url
-            altText
-            width
-            height
-          }
-          title
-          selectedOptions {
-            name
-            value
-          }
-        }
-      }
-      tags
-      options {
-        name
-        values
-      }
-    }
-  }
-`;
 
 export function links() {
   return [
